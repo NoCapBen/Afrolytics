@@ -1,0 +1,42 @@
+export const countries = [
+  {
+    name: "Kenya",
+    gdpGrowth: 5.6,
+    tourism: 2100000,
+    startupFunding: 800000000,
+    inflation: 6.3,
+    currency: "KES",
+  },
+  {
+    name: "Rwanda",
+    gdpGrowth: 7.2,
+    tourism: 1400000,
+    startupFunding: 120000000,
+    inflation: 4.1,
+    currency: "RWF",
+  },
+  {
+    name: "Nigeria",
+    gdpGrowth: 3.1,
+    tourism: 950000,
+    startupFunding: 1200000000,
+    inflation: 18.9,
+    currency: "NGN",
+  },
+  {
+    name: "South Africa",
+    gdpGrowth: 1.8,
+    tourism: 8500000,
+    startupFunding: 650000000,
+    inflation: 5.5,
+    currency: "ZAR",
+  },
+  {
+    name: "Morocco",
+    gdpGrowth: 3.5,
+    tourism: 13000000,
+    startupFunding: 200000000,
+    inflation: 3.2,
+    currency: "MAD",
+  },
+]
