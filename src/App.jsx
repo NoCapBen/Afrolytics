@@ -1,6 +1,7 @@
 import { useState } from "react"
-import { countries } from "./data"
+import { countries, topEconomies } from "./data"
 import { useWorldBank } from "./useWorldBank"
+import { useExchangeRate } from "./useExchangeRate"
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   LineChart, Line
@@ -24,21 +25,28 @@ function StatCard({ label, value, delay }) {
 
 function App() {
   const [selected, setSelected] = useState(countries[0])
-  const { data: liveData, loading } = useWorldBank(selected.name)
+  const { data: liveData, loading } = useWorldBank(selected.code)
+  const { rate: exchangeRate } = useExchangeRate(selected.currency)
 
-  const display = liveData ? { ...selected, ...liveData } : selected
+  const display = {
+    ...selected,
+    gdpGrowth: liveData?.gdpGrowth ?? 0,
+    inflation: liveData?.inflation ?? 0,
+    tourism: liveData?.tourism ?? 0,
+    inflationHistory: liveData?.inflationHistory ?? [],
+  }
 
-  const chartData = countries.map((c) => ({
+  const chartData = topEconomies.map((c) => ({
     name: c.name,
     GDP: c.gdpGrowth,
   }))
 
-  const fundingData = countries.map((c) => ({
+  const fundingData = topEconomies.map((c) => ({
     name: c.name,
     Funding: parseFloat((c.startupFunding / 1e9).toFixed(2)),
   }))
 
-  const tourismData = countries.map((c) => ({
+  const tourismData = topEconomies.map((c) => ({
     name: c.name,
     Tourism: c.tourism,
   }))
@@ -64,32 +72,30 @@ function App() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex gap-3 flex-wrap mb-8"
+          className="mb-8"
         >
-          {countries.map((c) => (
-            <button
-              key={c.name}
-              onClick={() => setSelected(c)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                selected.name === c.name
-                  ? "bg-green-500 text-white"
-                  : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
-              }`}
-            >
-              {c.name}
-            </button>
-          ))}
+          <label className="text-zinc-400 text-sm mb-2 block">Select a Country</label>
+          <select
+            value={selected.name}
+            onChange={(e) => setSelected(countries.find(c => c.name === e.target.value))}
+            className="bg-zinc-900 border border-zinc-700 text-white rounded-xl px-4 py-3 text-sm w-full md:w-72 focus:outline-none focus:border-green-500 cursor-pointer"
+          >
+            {countries.map((c) => (
+              <option key={c.name} value={c.name}>{c.name}</option>
+            ))}
+          </select>
         </motion.div>
 
         {/* Stats Cards */}
         {loading ? (
-          <div className="text-zinc-400 mb-8">Loading live data...</div>
+          <div className="text-zinc-400 mb-8 animate-pulse">Loading live data...</div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
             <StatCard label="GDP Growth" value={`${display.gdpGrowth}%`} delay={0} />
             <StatCard label="Inflation" value={`${display.inflation}%`} delay={0.1} />
             <StatCard label="Tourism Visitors" value={display.tourism.toLocaleString()} delay={0.2} />
             <StatCard label="Currency" value={display.currency} delay={0.3} />
+            <StatCard label={`1 USD → ${display.currency}`} value={exchangeRate ?? "..."} delay={0.4} />
           </div>
         )}
 
@@ -100,11 +106,11 @@ function App() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="bg-zinc-900 rounded-2xl p-6 mb-8 border border-zinc-800"
         >
-          <p className="text-green-400 text-sm font-semibold mb-4">GDP Growth by Country (%)</p>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={chartData}>
+          <p className="text-green-400 text-sm font-semibold mb-4">GDP Growth — Top 10 African Economies (%)</p>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 40 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-              <XAxis dataKey="name" stroke="#71717a" tick={{ fontSize: 12 }} />
+              <XAxis dataKey="name" stroke="#71717a" tick={{ fontSize: 11 }} angle={-35} textAnchor="end" />
               <YAxis stroke="#71717a" tick={{ fontSize: 12 }} />
               <Tooltip
                 contentStyle={{ backgroundColor: "#18181b", border: "none", borderRadius: "8px" }}
@@ -122,11 +128,11 @@ function App() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="bg-zinc-900 rounded-2xl p-6 mb-8 border border-zinc-800"
         >
-          <p className="text-green-400 text-sm font-semibold mb-4">Startup Funding by Country (USD Billions)</p>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={fundingData}>
+          <p className="text-green-400 text-sm font-semibold mb-4">Startup Funding — Top 10 African Economies (USD Billions)</p>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={fundingData} margin={{ top: 5, right: 20, left: 0, bottom: 40 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-              <XAxis dataKey="name" stroke="#71717a" tick={{ fontSize: 12 }} />
+              <XAxis dataKey="name" stroke="#71717a" tick={{ fontSize: 11 }} angle={-35} textAnchor="end" />
               <YAxis stroke="#71717a" tick={{ fontSize: 12 }} />
               <Tooltip
                 contentStyle={{ backgroundColor: "#18181b", border: "none", borderRadius: "8px" }}
@@ -144,11 +150,11 @@ function App() {
           transition={{ duration: 0.5, delay: 0.4 }}
           className="bg-zinc-900 rounded-2xl p-6 mb-8 border border-zinc-800"
         >
-          <p className="text-green-400 text-sm font-semibold mb-4">Tourism Visitors by Country</p>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={tourismData}>
+          <p className="text-green-400 text-sm font-semibold mb-4">Tourism Visitors — Top 10 African Economies</p>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={tourismData} margin={{ top: 5, right: 20, left: 0, bottom: 40 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-              <XAxis dataKey="name" stroke="#71717a" tick={{ fontSize: 12 }} />
+              <XAxis dataKey="name" stroke="#71717a" tick={{ fontSize: 11 }} angle={-35} textAnchor="end" />
               <YAxis stroke="#71717a" tick={{ fontSize: 12 }} />
               <Tooltip
                 contentStyle={{ backgroundColor: "#18181b", border: "none", borderRadius: "8px" }}
@@ -189,7 +195,7 @@ function App() {
           </ResponsiveContainer>
         </motion.div>
 
-        {/* AI Summary Box */}
+        {/* AI Summary */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -203,6 +209,7 @@ function App() {
             {display.name} is showing a GDP growth of {display.gdpGrowth}% with an inflation rate of {display.inflation}%.
             The tourism sector recorded {display.tourism.toLocaleString()} visitors, and startup funding reached $
             {(display.startupFunding / 1e9).toFixed(2)}B USD.
+            {exchangeRate && ` 1 USD is currently equal to ${exchangeRate} ${display.currency}.`}
           </p>
         </motion.div>
 
