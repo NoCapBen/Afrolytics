@@ -21,6 +21,11 @@ function App() {
     GDP: c.gdpGrowth,
   }))
 
+  const fundingData = countries.map((c) => ({
+    name: c.name,
+    Funding: parseFloat((c.startupFunding / 1e9).toFixed(2)),
+  }))
+
   return (
     <div className="bg-gray-900 min-h-screen text-white p-8">
 
@@ -55,7 +60,7 @@ function App() {
         <StatCard label="Currency" value={selected.currency} />
       </div>
 
-      {/* Bar Chart */}
+      {/* GDP Chart */}
       <div className="bg-gray-800 rounded-2xl p-6 mb-8">
         <p className="text-green-400 text-sm font-semibold mb-4">GDP Growth by Country (%)</p>
         <ResponsiveContainer width="100%" height={250}>
@@ -68,6 +73,23 @@ function App() {
               labelStyle={{ color: "#fff" }}
             />
             <Bar dataKey="GDP" fill="#22c55e" radius={[6, 6, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Startup Funding Chart */}
+      <div className="bg-gray-800 rounded-2xl p-6 mb-8">
+        <p className="text-green-400 text-sm font-semibold mb-4">Startup Funding by Country (USD Billions)</p>
+        <ResponsiveContainer width="100%" height={250}>
+          <BarChart data={fundingData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+            <XAxis dataKey="name" stroke="#9ca3af" tick={{ fontSize: 12 }} />
+            <YAxis stroke="#9ca3af" tick={{ fontSize: 12 }} />
+            <Tooltip
+              contentStyle={{ backgroundColor: "#1f2937", border: "none", borderRadius: "8px" }}
+              labelStyle={{ color: "#fff" }}
+            />
+            <Bar dataKey="Funding" fill="#3b82f6" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
