@@ -1,5 +1,21 @@
 export const countries = [
   {
+    name: "DRC",
+    gdpGrowth: 6.6,
+    tourism: 300000,
+    startupFunding: 45000000,
+    inflation: 14.3,
+    currency: "CDF",
+    inflationHistory: [
+      { year: "2019", value: 4.7 },
+      { year: "2020", value: 15.8 },
+      { year: "2021", value: 29.0 },
+      { year: "2022", value: 13.1 },
+      { year: "2023", value: 19.9 },
+      { year: "2024", value: 14.3 },
+    ],
+  },
+  {
     name: "Kenya",
     gdpGrowth: 5.6,
     tourism: 2100000,
