@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { countries } from "./data"
+import { useWorldBank } from "./useWorldBank"
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   LineChart, Line
@@ -23,6 +24,9 @@ function StatCard({ label, value, delay }) {
 
 function App() {
   const [selected, setSelected] = useState(countries[0])
+  const { data: liveData, loading } = useWorldBank(selected.name)
+
+  const display = liveData ? { ...selected, ...liveData } : selected
 
   const chartData = countries.map((c) => ({
     name: c.name,
@@ -78,12 +82,16 @@ function App() {
         </motion.div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <StatCard label="GDP Growth" value={`${selected.gdpGrowth}%`} delay={0} />
-          <StatCard label="Inflation" value={`${selected.inflation}%`} delay={0.1} />
-          <StatCard label="Tourism Visitors" value={selected.tourism.toLocaleString()} delay={0.2} />
-          <StatCard label="Currency" value={selected.currency} delay={0.3} />
-        </div>
+        {loading ? (
+          <div className="text-zinc-400 mb-8">Loading live data...</div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <StatCard label="GDP Growth" value={`${display.gdpGrowth}%`} delay={0} />
+            <StatCard label="Inflation" value={`${display.inflation}%`} delay={0.1} />
+            <StatCard label="Tourism Visitors" value={display.tourism.toLocaleString()} delay={0.2} />
+            <StatCard label="Currency" value={display.currency} delay={0.3} />
+          </div>
+        )}
 
         {/* GDP Chart */}
         <motion.div
@@ -129,7 +137,7 @@ function App() {
           </ResponsiveContainer>
         </motion.div>
 
-        {/* Tourism Bar Chart */}
+        {/* Tourism Chart */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -159,10 +167,10 @@ function App() {
           className="bg-zinc-900 rounded-2xl p-6 mb-8 border border-zinc-800"
         >
           <p className="text-green-400 text-sm font-semibold mb-4">
-            Inflation Trend — {selected.name} (2019–2024)
+            Inflation Trend — {display.name} (2019–2024)
           </p>
           <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={selected.inflationHistory}>
+            <LineChart data={display.inflationHistory}>
               <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
               <XAxis dataKey="year" stroke="#71717a" tick={{ fontSize: 12 }} />
               <YAxis stroke="#71717a" tick={{ fontSize: 12 }} />
@@ -188,11 +196,13 @@ function App() {
           transition={{ duration: 0.5, delay: 0.6 }}
           className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800"
         >
-          <p className="text-green-400 text-sm font-semibold mb-2">AI Summary</p>
+          <p className="text-green-400 text-sm font-semibold mb-2">
+            AI Summary {loading ? "" : "(Live Data)"}
+          </p>
           <p className="text-zinc-300">
-            {selected.name} is showing a GDP growth of {selected.gdpGrowth}% with an inflation rate of {selected.inflation}%.
-            The tourism sector recorded {selected.tourism.toLocaleString()} visitors, and startup funding reached $
-            {(selected.startupFunding / 1e9).toFixed(2)}B USD.
+            {display.name} is showing a GDP growth of {display.gdpGrowth}% with an inflation rate of {display.inflation}%.
+            The tourism sector recorded {display.tourism.toLocaleString()} visitors, and startup funding reached $
+            {(display.startupFunding / 1e9).toFixed(2)}B USD.
           </p>
         </motion.div>
 
