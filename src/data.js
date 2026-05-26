@@ -6,6 +6,14 @@ export const countries = [
     startupFunding: 800000000,
     inflation: 6.3,
     currency: "KES",
+    inflationHistory: [
+      { year: "2019", value: 5.2 },
+      { year: "2020", value: 5.4 },
+      { year: "2021", value: 6.1 },
+      { year: "2022", value: 7.9 },
+      { year: "2023", value: 6.8 },
+      { year: "2024", value: 6.3 },
+    ],
   },
   {
     name: "Rwanda",
@@ -14,6 +22,14 @@ export const countries = [
     startupFunding: 120000000,
     inflation: 4.1,
     currency: "RWF",
+    inflationHistory: [
+      { year: "2019", value: 2.4 },
+      { year: "2020", value: 7.7 },
+      { year: "2021", value: 0.8 },
+      { year: "2022", value: 13.9 },
+      { year: "2023", value: 5.1 },
+      { year: "2024", value: 4.1 },
+    ],
   },
   {
     name: "Nigeria",
@@ -22,6 +38,14 @@ export const countries = [
     startupFunding: 1200000000,
     inflation: 18.9,
     currency: "NGN",
+    inflationHistory: [
+      { year: "2019", value: 11.4 },
+      { year: "2020", value: 13.2 },
+      { year: "2021", value: 16.9 },
+      { year: "2022", value: 18.8 },
+      { year: "2023", value: 24.7 },
+      { year: "2024", value: 18.9 },
+    ],
   },
   {
     name: "South Africa",
@@ -30,6 +54,14 @@ export const countries = [
     startupFunding: 650000000,
     inflation: 5.5,
     currency: "ZAR",
+    inflationHistory: [
+      { year: "2019", value: 4.1 },
+      { year: "2020", value: 3.3 },
+      { year: "2021", value: 4.5 },
+      { year: "2022", value: 6.9 },
+      { year: "2023", value: 6.1 },
+      { year: "2024", value: 5.5 },
+    ],
   },
   {
     name: "Morocco",
@@ -38,5 +70,13 @@ export const countries = [
     startupFunding: 200000000,
     inflation: 3.2,
     currency: "MAD",
+    inflationHistory: [
+      { year: "2019", value: 0.2 },
+      { year: "2020", value: 0.6 },
+      { year: "2021", value: 1.4 },
+      { year: "2022", value: 6.6 },
+      { year: "2023", value: 6.1 },
+      { year: "2024", value: 3.2 },
+    ],
   },
 ]
