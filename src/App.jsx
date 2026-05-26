@@ -4,14 +4,20 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   LineChart, Line
 } from "recharts"
+import { motion } from "framer-motion"
 import Navbar from "./Navbar"
 
-function StatCard({ label, value }) {
+function StatCard({ label, value, delay }) {
   return (
-    <div className="bg-zinc-900 rounded-2xl p-5 flex flex-col gap-2 border border-zinc-800">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay }}
+      className="bg-zinc-900 rounded-2xl p-5 flex flex-col gap-2 border border-zinc-800"
+    >
       <p className="text-zinc-400 text-sm">{label}</p>
       <p className="text-white text-2xl font-bold">{value}</p>
-    </div>
+    </motion.div>
   )
 }
 
@@ -28,13 +34,34 @@ function App() {
     Funding: parseFloat((c.startupFunding / 1e9).toFixed(2)),
   }))
 
+  const tourismData = countries.map((c) => ({
+    name: c.name,
+    Tourism: c.tourism,
+  }))
+
   return (
     <div className="bg-black min-h-screen text-white">
       <Navbar />
       <div className="p-8">
 
+        {/* Hero */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8"
+        >
+          <h2 className="text-3xl font-bold text-white">Dashboard</h2>
+          <p className="text-zinc-400 mt-1">Select a country to explore its economic data</p>
+        </motion.div>
+
         {/* Country Selector */}
-        <div className="flex gap-3 flex-wrap mb-8">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex gap-3 flex-wrap mb-8"
+        >
           {countries.map((c) => (
             <button
               key={c.name}
@@ -48,18 +75,23 @@ function App() {
               {c.name}
             </button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <StatCard label="GDP Growth" value={`${selected.gdpGrowth}%`} />
-          <StatCard label="Inflation" value={`${selected.inflation}%`} />
-          <StatCard label="Tourism Visitors" value={selected.tourism.toLocaleString()} />
-          <StatCard label="Currency" value={selected.currency} />
+          <StatCard label="GDP Growth" value={`${selected.gdpGrowth}%`} delay={0} />
+          <StatCard label="Inflation" value={`${selected.inflation}%`} delay={0.1} />
+          <StatCard label="Tourism Visitors" value={selected.tourism.toLocaleString()} delay={0.2} />
+          <StatCard label="Currency" value={selected.currency} delay={0.3} />
         </div>
 
         {/* GDP Chart */}
-        <div className="bg-zinc-900 rounded-2xl p-6 mb-8 border border-zinc-800">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="bg-zinc-900 rounded-2xl p-6 mb-8 border border-zinc-800"
+        >
           <p className="text-green-400 text-sm font-semibold mb-4">GDP Growth by Country (%)</p>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={chartData}>
@@ -73,10 +105,15 @@ function App() {
               <Bar dataKey="GDP" fill="#22c55e" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
-        </div>
+        </motion.div>
 
         {/* Startup Funding Chart */}
-        <div className="bg-zinc-900 rounded-2xl p-6 mb-8 border border-zinc-800">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="bg-zinc-900 rounded-2xl p-6 mb-8 border border-zinc-800"
+        >
           <p className="text-green-400 text-sm font-semibold mb-4">Startup Funding by Country (USD Billions)</p>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={fundingData}>
@@ -90,10 +127,37 @@ function App() {
               <Bar dataKey="Funding" fill="#3b82f6" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
-        </div>
+        </motion.div>
+
+        {/* Tourism Bar Chart */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="bg-zinc-900 rounded-2xl p-6 mb-8 border border-zinc-800"
+        >
+          <p className="text-green-400 text-sm font-semibold mb-4">Tourism Visitors by Country</p>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={tourismData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+              <XAxis dataKey="name" stroke="#71717a" tick={{ fontSize: 12 }} />
+              <YAxis stroke="#71717a" tick={{ fontSize: 12 }} />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#18181b", border: "none", borderRadius: "8px" }}
+                labelStyle={{ color: "#fff" }}
+              />
+              <Bar dataKey="Tourism" fill="#a855f7" radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </motion.div>
 
         {/* Inflation Line Chart */}
-        <div className="bg-zinc-900 rounded-2xl p-6 mb-8 border border-zinc-800">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="bg-zinc-900 rounded-2xl p-6 mb-8 border border-zinc-800"
+        >
           <p className="text-green-400 text-sm font-semibold mb-4">
             Inflation Trend — {selected.name} (2019–2024)
           </p>
@@ -115,17 +179,22 @@ function App() {
               />
             </LineChart>
           </ResponsiveContainer>
-        </div>
+        </motion.div>
 
         {/* AI Summary Box */}
-        <div className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800"
+        >
           <p className="text-green-400 text-sm font-semibold mb-2">AI Summary</p>
           <p className="text-zinc-300">
             {selected.name} is showing a GDP growth of {selected.gdpGrowth}% with an inflation rate of {selected.inflation}%.
             The tourism sector recorded {selected.tourism.toLocaleString()} visitors, and startup funding reached $
             {(selected.startupFunding / 1e9).toFixed(2)}B USD.
           </p>
-        </div>
+        </motion.div>
 
       </div>
     </div>
